@@ -1,0 +1,40 @@
+name: Build and test with Conda
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  build-and-test-win:
+
+    runs-on: windows-2019
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Prepare conda environment
+      shell: cmd
+      run: |
+        rem Note: Conda VC setenv-script works only with cmd on Win
+        rem Source conda hook
+        set CONDA=C:\Miniconda
+        call %CONDA%\condabin\conda_hook.bat
+        call conda create -n mstruct-env -y -c conda-forge python=3.6 libblas=*=*mkl boost=1.66 lapack fftw gsl scons bzip2 git vs2019_win-64 
+    - name: Make distribution
+      shell: bash
+      run: |
+        source $CONDA/etc/profile.d/conda.sh
+        conda activate mstruct-env
+        P="$(conda info --json | grep default_prefix | cut -d\" -f4)"
+        mkdir -p dist/mstruct
+        cp $P/Library/bin/fftw3.dll dist/mstruct
+        cp $P/python36.dll dist/mstruct
+        cp $P/Library/bin/boost_python3.dll dist/mstruct
+        cp $P/Library/bin/boost_numpy3.dll dist/mstruct
+    - name: Archive distribution
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist-win
+        path: dist
