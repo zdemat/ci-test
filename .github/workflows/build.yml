@@ -39,10 +39,10 @@ jobs:
         set P=%P:\\=\%
         echo conda_prefix: %P%
         mkdir dist\mstruct
-        copy $P/Library/bin/fftw3.dll dist/mstruct
-        copy $P/python36.dll dist/mstruct
-        copy $P/Library/bin/boost_python3.dll dist/mstruct
-        copy $P/Library/bin/boost_numpy3.dll dist/mstruct
+        copy %P%/Library/bin/fftw3.dll dist/mstruct
+        copy %P%/python36.dll dist/mstruct
+        copy %P%/Library/bin/boost_python3.dll dist/mstruct
+        copy %P%/Library/bin/boost_numpy3.dll dist/mstruct
     - name: Archive distribution
       uses: actions/upload-artifact@v2
       with:
