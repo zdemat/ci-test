@@ -28,6 +28,7 @@ jobs:
       run: |
         set CONDA=C:\Miniconda
         call %CONDA%\condabin\conda_hook.bat
+        call conda info --envs
         call conda activate mstruct-env
         rem Get conda env prefix
         call conda info --json | grep default_prefix > _tmp_path1.txt
